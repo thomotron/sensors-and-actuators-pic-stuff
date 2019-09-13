@@ -14,8 +14,8 @@ void send_code(byte code);
 #define IR_TX PORTCbits.RC6
 #define IR_HIGH 0
 #define IR_LOW 1
-#define IR_STOP IR_HIGH
-#define IR_START IR_LOW
+#define IR_STOP IR_LOW
+#define IR_START IR_HIGH
 #define BUTTON_RED PORTBbits.RB0
 #define BUTTON_GRN PORTBbits.RB1
 #define BUTTON_HIGH 0
