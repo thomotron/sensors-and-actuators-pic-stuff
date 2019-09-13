@@ -145,4 +145,7 @@ void send_code(byte code)
     // Send both stop bits
     IR_TX = IR_STOP;
     pause(timingInterval * 2);
+
+    // Go back to transmitting the idle code
+    IR_TX = IR_IDLE;
 }
