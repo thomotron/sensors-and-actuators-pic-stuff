@@ -16,6 +16,7 @@ void send_code(byte code);
 #define IR_LOW 1
 #define IR_STOP IR_LOW
 #define IR_START IR_HIGH
+#define IR_IDLE IR_LOW;
 #define BUTTON_RED PORTBbits.RB0
 #define BUTTON_GRN PORTBbits.RB1
 #define BUTTON_HIGH 0
@@ -39,6 +40,7 @@ void init()
     TRISBbits.TRISB1 = 1; // Set B1 to input
     TRISC = 0b10000000; // Set C7 to input and the rest to output
     PORTC = 0b00000000; // Set our outputs low
+    IR_TX = IR_IDLE; // ...except for IR_TX which needs to transmit the idle code
 }
 
 void main()
