@@ -1,6 +1,7 @@
 #include <p18f452.h>
 #include "../PIC18F452Config.h" // Configuration bits setting for PIC
 #include "../SnA.h"
+#include "codes.h"
 #define byte unsigned char // byte is used for unsigned char type
 
 // Prototypes
