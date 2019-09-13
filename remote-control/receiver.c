@@ -34,6 +34,9 @@ void send_code(byte code);
 #define CODE_CDN 0b00000101 // Channel down
 #define CODE_CRS 0b00000110 // Channel reset
 
+int volume;
+int channel;
+
 void init()
 {
     TRISBbits.TRISB0 = 1; // Set B0 to input
@@ -41,67 +44,139 @@ void init()
     TRISC = 0b10000000; // Set C7 to input and the rest to output
     PORTC = 0b00000000; // Set our outputs low
     IR_TX = IR_IDLE; // ...except for IR_TX which needs to transmit the idle code
+
+    // Set the volume and channel to their defaults
+    volume = 0;
+    channel = 1;
 }
 
 void main()
 {
     // Silly embedded C things
-    byte code;
-    byte dipAndButtons
+    unsigned char i;
+    byte codeBuffer;
+    int timingInterval;
 
     init();
 
     while (1) // Spin forever
     {
-        // Get the B5 DIP setting and B0-1 settings in a single three-bit block
-        // PORTB is inverted (~) and shifted to move B5 to 2 and B0-1 to 0-1
-        // So the output is interpreted as: 0b101
-        //                            DIP on  ^||
-        //                        Button 0 off ^|
-        //                          Button 1 on ^
-        //                           B5                    B0-1        Mask
-        dipAndButtons = (~PORTB & 0b00100000 >> 3) | (~PORTB & 0b11) & 0b111;
+        // Don't do anything if we haven't received a start bit
+        if (IR_RX != IR_START) continue;
 
-        // Choose which code we should send based on the DIP and buttons
-        switch (dipAndButtons)
+        // Wait half of the timing interval to synchronise half-way through
+        // bit-time
+        delay(timingInterval / 2);
+
+        // Double-check if the start bit is still here, continuing if not
+        if (IR_RX != IR_START) continue;
+
+        // Wait until the next bit
+        delay(timingInterval);
+
+        // Receive the next 8 bits of the code and shift it into the buffer
+        for (i = 0; i < 8; i++)
         {
-            case 0b001:
-                code = CODE_VUP;
+            // Shift left one
+            codeBuffer << 1;
+
+            // Append the current bit to the end
+            codeBuffer |= IR_RX;
+
+            delay(timingInterval);
+        }
+
+        // Wait for the two stop bits
+        delay(timingInterval * 2);
+
+        // Determine which code this was and act accordingly
+        switch (codeBuffer)
+        {
+            case CODE_VUP: // Increase volume
+                changeVolume(1);
                 break;
-            case 0b010:
-                code = CODE_VDN;
+            case CODE_VDN: // Decrease volume
+                changeVolume(-1);
                 break;
-            case 0b011:
-                code = CODE_VMT;
+            case CODE_VMT: // Toggle mute
+                // TODO: Add mute/unmute
                 break;
-            case 0b101:
-                code = CODE_CUP;
+            case CODE_CUP: // Increase channel
+                changeChannel(1);
                 break;
-            case 0b110:
-                code = CODE_CDN;
+            case CODE_CDN: // Decrease channel
+                changeChannel(-1);
                 break;
-            case 0b111:
-                code = CODE_CRS;
+            case CODE_CRS: // Reset channel to 1
+                channel = 1;
+                beepOP();
                 break;
-            case 0b000:
-            case 0b100:
+            case CODE_NOP: // Do nothing
             default:
-                code = CODE_NOP;
-                break;
+                // Beep to indicate a NOP
+                beepNOP();
+                continue;
         }
+    }
+}
 
-        // Send the code if it isn't NOP
-        if (code != CODE_NOP)
-        {
-            // Send the code
-            send_code(code);
+// Modifies the volume, capping at 0 and 10
+void changeVolume(int volumeDelta)
+{
+    // Modify the volume
+    volume += volumeDelta;
 
-            // Beep to let the operator know we've sent something
-            beep();
-        }
+    // Check if we've crossed a boundary
+    if (volume > 10)
+    {
+        // Cap it at 10
+        volume = 10;
 
-        // Wait 500ms to allow the operator time to change the buttons
-        pause(500);
+        // Beep to indicate a NOP
+        beepNOP();
+    }
+    else if (volume < 0)
+    {
+        // Cap it at 0
+        volume = 0;
+
+        // Beep to indicate a NOP
+        beepNOP();
+    }
+    else
+    {
+        // Beep to indicate an OP
+        beepOP();
+    }
+}
+
+// Modifies the channel, capping at 1 and 20
+void changeChannel(int channelDelta)
+{
+    // Modify the channel
+    volume += volumeDelta;
+
+    // Check if we've crossed a boundary
+    if (channel > 20)
+    {
+        // Cap it at 10
+        channel = 20;
+
+        // Beep to indicate a NOP
+        beepNOP();
+    }
+    else if (channel < 1)
+    {
+        // Cap it at 1
+        channel = 1;
+
+        // Beep to indicate a NOP
+        beepNOP();
+    }
+    else
+    {
+        // Beep to indicate an OP
+        beepOP();
     }
 }
 
@@ -109,6 +184,20 @@ void main()
 void beep()
 {
     beep(2000, 500);
+}
+
+// Beeps to indicate an OP
+void beepOP()
+{
+    beep();
+}
+
+// Beeps to indicate a NOP
+void beepNOP()
+{
+    beep();
+    delay(10);
+    beep();
 }
 
 // Sound a beep via the onboard buzzer
