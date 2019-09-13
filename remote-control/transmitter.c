@@ -6,7 +6,7 @@
 
 // Prototypes
 void init();
-void beep();
+void beepOnce();
 void beep(byte tone, int cycles);
 void send_code(byte code);
 
@@ -87,7 +87,7 @@ void main()
             send_code(code);
 
             // Beep to let the operator know we've sent something
-            beep();
+            beepOnce();
         }
 
         // Wait 500ms to allow the operator time to change the buttons
@@ -96,7 +96,7 @@ void main()
 }
 
 // Sound a beep via the onboard buzzer with a pre-set tone
-void beep()
+void beepOnce()
 {
     beep(2000, 500);
 }

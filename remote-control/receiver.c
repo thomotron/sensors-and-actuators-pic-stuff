@@ -171,23 +171,23 @@ void changeChannel(int channelDelta)
 }
 
 // Sound a beep via the onboard buzzer with a pre-set tone
-void beep()
+void beepOnce()
 {
-    beep(2000, 500);
+    beepOnce(2000, 500);
 }
 
 // Beeps to indicate an OP
 void beepOP()
 {
-    beep();
+    beepOnce();
 }
 
 // Beeps to indicate a NOP
 void beepNOP()
 {
-    beep();
+    beepOnce();
     delay(10);
-    beep();
+    beepOnce();
 }
 
 // Sound a beep via the onboard buzzer
