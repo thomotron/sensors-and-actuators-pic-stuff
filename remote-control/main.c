@@ -33,6 +33,7 @@ void changeChannel(int channelDelta);
 #define BUTTON_HIGH 0
 #define BUTTON_LOW 1
 #define BUZZER PORTCbits.RC1
+#define IR_TIMING 100
 
 #ifndef TRANSMITTER
 int volume;
@@ -58,8 +59,8 @@ void main()
 {
 #ifdef TRANSMITTER
     // Silly embedded C things
-    byte code;
-    byte dipAndButtons;
+    byte code = 0;
+    byte dipAndButtons = 0;
 
     init();
 
@@ -113,7 +114,7 @@ void main()
         }
 
         // Wait 500ms to allow the operator time to change the buttons
-        pause(500);
+        pause(100);
     }
 #endif
 
@@ -121,7 +122,6 @@ void main()
     // Silly embedded C things
     unsigned char i;
     byte codeBuffer;
-    int timingInterval;
 
     init();
 
@@ -132,13 +132,13 @@ void main()
 
         // Wait half of the timing interval to synchronise half-way through
         // bit-time
-        pause(timingInterval / 2);
+        pause(IR_TIMING / 2);
 
         // Double-check if the start bit is still here, continuing if not
         if (IR_RX != IR_START) continue;
 
         // Wait until the next bit
-        pause(timingInterval);
+        pause(IR_TIMING);
 
         // Receive the next 8 bits of the code and shift it into the buffer
         for (i = 0; i < 8; i++)
@@ -149,11 +149,11 @@ void main()
             // Append the current bit to the end
             codeBuffer |= IR_RX;
 
-            pause(timingInterval);
+            pause(IR_TIMING);
         }
 
         // Wait for the two stop bits
-        pause(timingInterval * 2);
+        pause(IR_TIMING * 2);
 
         // Determine which code this was and act accordingly
         switch (codeBuffer)
@@ -190,7 +190,7 @@ void main()
 // Sound a beep via the onboard buzzer with a pre-set tone
 void beepOnce()
 {
-    beep(2000, 500);
+    beep(200, 25);
 }
 
 // Sound a beep via the onboard buzzer
@@ -210,23 +210,22 @@ void beep(byte tone, int cycles)
 void send_code(byte code)
 {
     byte mask;
-    int timingInterval = 100; // 100ms timing
 
     // Send the start bit
     IR_TX = IR_START;
-    pause(timingInterval);
+    pause(IR_TIMING);
 
     // Send the code
     for (mask = 0b10000000; mask > 0b00000000; mask >>= 1)
     {
         IR_TX = !(code & mask); // Set IR to masked bit
                                 // Inverted for circuit reasons
-        pause(timingInterval);
+        pause(IR_TIMING);
     }
 
     // Send both stop bits
     IR_TX = IR_STOP;
-    pause(timingInterval * 2);
+    pause(IR_TIMING * 2);
 
     // Go back to transmitting the idle code
     IR_TX = IR_IDLE;
