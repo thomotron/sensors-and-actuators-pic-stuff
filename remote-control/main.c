@@ -1,6 +1,6 @@
 // Do some fun switching so we can have both programs in the same file and still
 // compile and flash with MPLABX (blasted NetBeans platform IDEs!)
-#define TRANSMITTER
+//#define TRANSMITTER
 
 #include <p18f452.h>
 #include "../PIC18F452Config.h" // Configuration bits setting for PIC
@@ -13,6 +13,12 @@ void init();
 void beepOnce();
 void beep(byte tone, int cycles);
 void send_code(byte code);
+#ifndef TRANSMITTER
+void beepOP();
+void beepNOP();
+void changeVolume(int volumeDelta);
+void changeChannel(int channelDelta);
+#endif
 
 // Sanity definitions
 #define IR_RX PORTCbits.RC7
@@ -203,6 +209,7 @@ void beep(byte tone, int cycles)
 // Send a single byte over IR
 void send_code(byte code)
 {
+    byte mask;
     int timingInterval = 100; // 100ms timing
 
     // Send the start bit
@@ -210,7 +217,6 @@ void send_code(byte code)
     pause(timingInterval);
 
     // Send the code
-    byte mask;
     for (mask = 0b00000001; mask > 0b00000000; mask <<= 1)
     {
         IR_TX = !(code & mask); // Set IR to masked bit
