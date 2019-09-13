@@ -14,6 +14,8 @@ void send_code(byte code);
 #define IR_TX PORTCbits.RC6
 #define IR_HIGH 0
 #define IR_LOW 1
+#define IR_STOP IR_HIGH
+#define IR_START IR_LOW
 #define BUTTON_RED PORTBbits.RB0
 #define BUTTON_GRN PORTBbits.RB1
 #define BUTTON_HIGH 0
@@ -126,7 +128,7 @@ void send_code(byte code)
     int timingInterval = 100; // 100ms timing
 
     // Send the start bit
-    IR_TX = IR_LOW;
+    IR_TX = IR_START;
     pause(timingInterval);
 
     // Send the code
@@ -139,6 +141,6 @@ void send_code(byte code)
     }
 
     // Send both stop bits
-    IR_TX = IR_HIGH;
+    IR_TX = IR_STOP;
     pause(timingInterval * 2);
 }
