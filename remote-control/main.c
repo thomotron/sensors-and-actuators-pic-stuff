@@ -217,7 +217,7 @@ void send_code(byte code)
     pause(timingInterval);
 
     // Send the code
-    for (mask = 0b00000001; mask > 0b00000000; mask <<= 1)
+    for (mask = 0b10000000; mask > 0b00000000; mask >>= 1)
     {
         IR_TX = !(code & mask); // Set IR to masked bit
                                 // Inverted for circuit reasons
