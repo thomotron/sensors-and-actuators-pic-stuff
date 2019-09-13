@@ -37,7 +37,7 @@ void main()
 {
     // Silly embedded C things
     byte code;
-    byte dipAndButtons
+    byte dipAndButtons;
 
     init();
 
