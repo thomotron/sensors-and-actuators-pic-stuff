@@ -153,7 +153,9 @@ void main()
         }
 
         // Wait for the two stop bits
-        pause(IR_TIMING * 2);
+        // We run this twice due to issues with multiplying the IR_TIMING macro
+        pause(IR_TIMING);
+        pause(IR_TIMING);
 
         // Determine which code this was and act accordingly
         switch (codeBuffer)
@@ -224,8 +226,10 @@ void send_code(byte code)
     }
 
     // Send both stop bits
+    // We run this twice due to issues with multiplying the IR_TIMING macro
     IR_TX = IR_STOP;
-    pause(IR_TIMING * 2);
+    pause(IR_TIMING);
+    pause(IR_TIMING);
 
     // Go back to transmitting the idle code
     IR_TX = IR_IDLE;
