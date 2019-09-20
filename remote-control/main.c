@@ -16,8 +16,6 @@ void send_code(byte code);
 #ifndef TRANSMITTER
 void beepOP();
 void beepNOP();
-void changeVolume(int volumeDelta);
-void changeChannel(int channelDelta);
 #endif
 
 // Sanity definitions
@@ -161,19 +159,49 @@ void main()
         switch (codeBuffer)
         {
             case CODE_VUP: // Increase volume
-                changeVolume(1);
+                if (volume == 10)
+                {
+                    beepNOP();
+                }
+                else
+                {
+                    volume++;
+                    beepOP();
+                }
                 break;
             case CODE_VDN: // Decrease volume
-                changeVolume(-1);
+                if (volume == 0)
+                {
+                    beepNOP();
+                }
+                else
+                {
+                    volume--;
+                    beepOP();
+                }
                 break;
             case CODE_VMT: // Toggle mute
                 // TODO: Add mute/unmute
                 break;
             case CODE_CUP: // Increase channel
-                changeChannel(1);
+                if (channel == 20) {
+                    beepNOP();
+                }
+                else
+                {
+                    channel++;
+                    beepOP();
+                }
                 break;
             case CODE_CDN: // Decrease channel
-                changeChannel(-1);
+                if (channel == 1) {
+                    beepNOP();
+                }
+                else
+                {
+                    channel--;
+                    beepOP();
+                }
                 break;
             case CODE_CRS: // Reset channel to 1
                 channel = 1;
@@ -248,65 +276,5 @@ void beepNOP()
     beepOnce();
     pause(10);
     beepOnce();
-}
-
-// Modifies the volume, capping at 0 and 10
-void changeVolume(int volumeDelta)
-{
-    // Modify the volume
-    volume += volumeDelta;
-
-    // Check if we've crossed a boundary
-    if (volume > 10)
-    {
-        // Cap it at 10
-        volume = 10;
-
-        // Beep to indicate a NOP
-        beepNOP();
-    }
-    else if (volume < 0)
-    {
-        // Cap it at 0
-        volume = 0;
-
-        // Beep to indicate a NOP
-        beepNOP();
-    }
-    else
-    {
-        // Beep to indicate an OP
-        beepOP();
-    }
-}
-
-// Modifies the channel, capping at 1 and 20
-void changeChannel(int channelDelta)
-{
-    // Modify the channel
-    volume += channelDelta;
-
-    // Check if we've crossed a boundary
-    if (channel > 20)
-    {
-        // Cap it at 10
-        channel = 20;
-
-        // Beep to indicate a NOP
-        beepNOP();
-    }
-    else if (channel < 1)
-    {
-        // Cap it at 1
-        channel = 1;
-
-        // Beep to indicate a NOP
-        beepNOP();
-    }
-    else
-    {
-        // Beep to indicate an OP
-        beepOP();
-    }
 }
 #endif
