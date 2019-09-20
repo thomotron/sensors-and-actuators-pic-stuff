@@ -33,7 +33,7 @@ void changeChannel(int channelDelta);
 #define BUTTON_HIGH 0
 #define BUTTON_LOW 1
 #define BUZZER PORTCbits.RC1
-#define IR_TIMING 100
+#define IR_TIMING 30
 
 #ifndef TRANSMITTER
 int volume;
