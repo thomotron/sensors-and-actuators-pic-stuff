@@ -43,7 +43,7 @@ void init()
     TRISBbits.TRISB0 = 1; // Set B0 to input
     TRISBbits.TRISB1 = 1; // Set B1 to input
     TRISC = 0b10000000; // Set C7 to input and the rest to output
-    PORTC = 0b00000000; // Set our outputs low
+    PORTC = 0b10000000; // Set our outputs low
     IR_TX = IR_IDLE; // ...except for IR_TX which needs to transmit the idle code
 
 #ifndef TRANSMITTER
