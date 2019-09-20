@@ -145,10 +145,10 @@ void main()
         for (i = 0; i < 8; i++)
         {
             // Shift left one
-            codeBuffer << 1;
+            codeBuffer <<= 1;
 
             // Append the current bit to the end
-            codeBuffer |= IR_RX;
+            codeBuffer |= !IR_RX;
 
             pause(IR_TIMING);
         }
