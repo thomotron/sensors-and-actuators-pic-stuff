@@ -138,6 +138,9 @@ void main()
         // Wait until the next bit
         pause(IR_TIMING);
 
+        // Clear the code buffer
+        codeBuffer = 0;
+
         // Receive the next 8 bits of the code and shift it into the buffer
         for (i = 0; i < 8; i++)
         {
