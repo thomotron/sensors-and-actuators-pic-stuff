@@ -17,6 +17,8 @@ void send_code(byte code);
 void beepOP();
 void beepNOP();
 #endif
+extern void init_LCD();
+extern void LCD_BCD2(byte num);
 
 // Sanity definitions
 #define IR_RX PORTCbits.RC7
@@ -36,6 +38,7 @@ void beepNOP();
 #ifndef TRANSMITTER
 int volume;
 int channel;
+unsigned char muted;
 #endif
 
 void init()
@@ -51,6 +54,8 @@ void init()
     volume = 0;
     channel = 1;
 #endif
+
+    init_LCD();
 }
 
 void main()
@@ -216,6 +221,13 @@ void main()
                 beepNOP();
                 continue;
         }
+
+        // Write the current state to the LCD
+        LCD_line1;
+        LCD_message("Channel ");
+        LCD_BCD2(channel);
+        LCD_line2;
+        LCD_message(muted ? "Mute" : "    ");
     }
 #endif
 }
