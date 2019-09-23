@@ -222,12 +222,8 @@ void main()
                 continue;
         }
 
-        // Write the current state to the LCD
-        LCD_line1;
-        LCD_message("Channel ");
-        LCD_BCD2(channel);
-        LCD_line2;
-        LCD_message(muted ? "Mute" : "    ");
+        // Update the display to reflect the changes
+        updateDisplay();
     }
 #endif
 }
@@ -291,5 +287,16 @@ void beepNOP()
     beepOnce();
     pause(10);
     beepOnce();
+}
+
+// Writes the current channel and mute status to the LCD
+void updateDisplay()
+{
+    LCD_line1;
+    LCD_message("Channel ");
+    LCD_BCD2(channel);
+
+    LCD_line2;
+    LCD_message(muted ? "Mute" : "    ");
 }
 #endif
