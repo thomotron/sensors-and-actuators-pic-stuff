@@ -18,6 +18,10 @@ void send_code(byte code);
 #ifndef TRANSMITTER
 void beepOP();
 void beepNOP();
+void updateDisplay();
+void bar(byte value);
+void leds(byte value);
+void extendedBar(unsigned short value);
 #endif
 extern void init_LCD();
 extern void LCD_BCD2(byte num);
