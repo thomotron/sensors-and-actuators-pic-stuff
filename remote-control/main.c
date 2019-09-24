@@ -232,6 +232,9 @@ void main()
 
         // Update the display to reflect the changes
         updateDisplay();
+
+        // Update the bar graph to reflect the current volume
+        extendedBar(0b1111111111 >> (10 - volume)); // Shift down to desired vol
     }
 #endif
 }
