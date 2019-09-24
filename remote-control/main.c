@@ -243,11 +243,13 @@ void main()
         // Update the bar graph to reflect the current volume
         if (muted)
         {
-            extendedBar(0); // Clear the bar graph
+            // Clear the bar graph
+            extendedBar(0);
         }
         else
         {
-            extendedBar(0b1111111111 >> (10 - volume)); // Shift down to desired vol
+            // Shift down to desired vol
+            extendedBar(0b1111111111 >> (10 - volume));
         }
     }
 #endif
