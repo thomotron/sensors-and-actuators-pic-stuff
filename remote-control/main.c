@@ -45,6 +45,12 @@ void init()
 {
     TRISBbits.TRISB0 = 1; // Set B0 to input
     TRISBbits.TRISB1 = 1; // Set B1 to input
+
+    // Bar graph and LEDs
+    TRISD = 0b00000000; // Set TRISD to output
+    TRISAbits.TRISA3 = 0; // Bar latch
+    TRISAbits.TRISA5 = 0; // LED latch
+
     TRISC = 0b10000000; // Set C7 to input and the rest to output
     PORTC = 0b10000000; // Set our outputs low
     IR_TX = IR_IDLE; // ...except for IR_TX which needs to transmit the idle code
@@ -298,5 +304,25 @@ void updateDisplay()
 
     LCD_line2;
     LCD_message(muted ? "Mute" : "    ");
+}
+
+// Display a value on the first eight segments of the bar graph
+void bar(byte value)
+{
+    PORTD = value; // Set PORTD to our value
+
+    // Pulse the bar latch
+    PORTAbits.RA3 = 1;
+    PORTAbits.RA3 = 0;
+}
+
+// Display a value on the last two bits of the bar graph and four LEDs
+void leds(byte value)
+{
+    PORTD = value & 0b11110011; // Set PORTD to value masked by relevant pins
+
+    // Pulse the LED latch
+    PORTAbits.RA5 = 1;
+    PORTAbits.RA5 = 0;
 }
 #endif
