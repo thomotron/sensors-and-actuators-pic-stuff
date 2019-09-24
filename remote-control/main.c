@@ -204,6 +204,7 @@ void main()
                 break;
             case CODE_VMT: // Toggle mute
                 muted = muted ? 0 : 1;
+                beepOP();
                 break;
             case CODE_CUP: // Increase channel
                 if (channel == 20) {
