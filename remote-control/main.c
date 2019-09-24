@@ -1,5 +1,7 @@
-// Do some fun switching so we can have both programs in the same file and still
-// compile and flash with MPLABX (blasted NetBeans platform IDEs!)
+// Do some fun switching so we can have both programs in the same file without
+// having to rework the project to have multiple make targets
+//
+// UNCOMMENT BELOW LINE TO COMPILE TRANSMITTER, COMMENT TO COMPILE RECEIVER
 //#define TRANSMITTER
 
 #include <p18f452.h>
