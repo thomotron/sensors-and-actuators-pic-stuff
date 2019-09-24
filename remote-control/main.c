@@ -327,4 +327,14 @@ void leds(byte value)
     PORTAbits.RA5 = 1;
     PORTAbits.RA5 = 0;
 }
+
+// Display a value on the whole bar graph
+void extendedBar(unsigned short value)
+{
+    // Write the first eight segments
+    bar(value & 0b11111111);
+
+    // Write the remaining two segments
+    leds(value >> 8 & 0b11);
+}
 #endif
