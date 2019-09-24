@@ -43,14 +43,16 @@ unsigned char muted;
 
 void init()
 {
-    TRISBbits.TRISB0 = 1; // Set B0 to input
-    TRISBbits.TRISB1 = 1; // Set B1 to input
+    // Buttons
+    TRISBbits.TRISB0 = 1; // Button 0
+    TRISBbits.TRISB1 = 1; // Button 1
 
     // Bar graph and LEDs
     TRISD = 0b00000000; // Set TRISD to output
     TRISAbits.TRISA3 = 0; // Bar latch
     TRISAbits.TRISA5 = 0; // LED latch
 
+    // IR
     TRISC = 0b10000000; // Set C7 to input and the rest to output
     PORTC = 0b10000000; // Set our outputs low
     IR_TX = IR_IDLE; // ...except for IR_TX which needs to transmit the idle code
