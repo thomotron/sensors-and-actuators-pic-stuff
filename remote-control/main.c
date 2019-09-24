@@ -203,7 +203,7 @@ void main()
                 }
                 break;
             case CODE_VMT: // Toggle mute
-                // TODO: Add mute/unmute
+                muted = muted ? 0 : 1;
                 break;
             case CODE_CUP: // Increase channel
                 if (channel == 20) {
@@ -240,7 +240,14 @@ void main()
         updateDisplay();
 
         // Update the bar graph to reflect the current volume
-        extendedBar(0b1111111111 >> (10 - volume)); // Shift down to desired vol
+        if (muted)
+        {
+            extendedBar(0); // Clear the bar graph
+        }
+        else
+        {
+            extendedBar(0b1111111111 >> (10 - volume)); // Shift down to desired vol
+        }
     }
 #endif
 }
